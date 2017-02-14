@@ -1,16 +1,53 @@
 <?php
 require_once('../../../private/initialize.php');
+
+// Set default page variables
+$errors = [];
+$salesperson = array(
+    'first_name' => '',
+    'last_name' => ''
+);
+
+if(is_post_request()) {
+    // Confirm that values are present
+    if(isset($_POST['first_name'])) {
+        $salesperson['first_name'] = $_POST['first_name'];
+    }
+    if(isset($_POST['last_name'])) {
+        $salesperson['last_name'] = $_POST['last_name'];
+    }
+    
+    $result = insert_salesperson($salesperson);
+    if($result === true) {
+        $new_id = db_insert_id($db);
+        redirect_to('show.php?id=' . $new_id);
+    }
+    else {
+        $errors = $result;
+    }
+    
+}
 ?>
 
 <?php $page_title = 'Staff: New Salesperson'; ?>
 <?php include(SHARED_PATH . '/header.php'); ?>
 
 <div id="main-content">
-  <a href="#add_a_url">Back to Salespeople List</a><br />
+  <a href="index.php">Back to Salespeople List</a><br />
 
   <h1>New Salesperson</h1>
 
   <!-- TODO add form -->
+    <?php echo display_errors($errors); ?>
+    
+    <form action="new.php" method="post">
+    First name:<br>
+        <input type="text" name="first_name" value="<?php echo $salesperson['first_name']; ?>"><br>
+    Last name:<br>
+        <input type="text" name="last_name" value="<?php echo $salesperson['last_name']; ?>"><br>
+        <br>
+        <input type="submit" name="submit" value="Create">
+    </form>
 
 </div>
 
