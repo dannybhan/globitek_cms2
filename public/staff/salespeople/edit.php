@@ -15,6 +15,12 @@ if (is_post_request()) {
     // Confirm values
     $salesperson['first_name'] = isset($_POST['first_name']) ? $_POST['first_name'] : '';
     $salesperson['last_name'] = isset($_POST['last_name']) ? $_POST['last_name'] : '';
+    if(isset($_POST['phone'])) { 
+        $salesperson['phone'] = $_POST['phone']; 
+    }
+    if(isset($_POST['email'])) { 
+        $salesperson['email'] = $_POST['email']; 
+    }
     
     $result = update_salesperson($salesperson);
     if ($result === true) {
@@ -40,13 +46,13 @@ if (is_post_request()) {
   <!-- TODO add form -->
     <form action="edit.php?id=<?php echo h(u($salesperson['id'])); ?>" method="post">
     First Name:<br>
-        <input type="text" name="first_name" value="<?php echo h($salesperson['first_name']); ?>"/><br>
+        <input type="text" name="first_name" value="<?php echo h($salesperson['first_name']); ?>"><br>
     Last Name: <br>
-        <input type="text" name="last_Name" value="<?php echo h($salesperson['last_name']); ?>"/><br>
+        <input type="text" name="last_name" value="<?php echo h($salesperson['last_name']); ?>"><br>
     Phone:<br>
-        <input type="text" name="phone" value="<?php echo h($salesperson['phone']); ?>" /><br>
+        <input type="text" name="phone" value="<?php echo h($salesperson['phone']); ?>"><br>
     Email:<br>
-        <input type="text" name="email" value="<?php echo h($salesperson['email']); ?>" /><br>
+        <input type="text" name="email" value="<?php echo h($salesperson['email']); ?>"><br>
     <br>
         <input type="submit" name="submit" value="Update">
     </form>
