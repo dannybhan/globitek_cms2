@@ -35,15 +35,19 @@ if (is_post_request()) {
 
   <h1>Edit Salesperson: <?php echo $salesperson['first_name'] . " " . $salesperson['last_name']; ?></h1>
     
-    <?php echo display_errors[$errors]; ?>
+    <?php echo display_errors($errors); ?>
 
   <!-- TODO add form -->
-    <form action="edit.php?id=<?php echo $user['id']; ?>" method="post">
+    <form action="edit.php?id=<?php echo h(u($salesperson['id'])); ?>" method="post">
     First Name:<br>
-        <input type="text" name="first_name" value="<?php echo $salesperson['first_name']; ?>"/><br>
+        <input type="text" name="first_name" value="<?php echo h($salesperson['first_name']); ?>"/><br>
     Last Name: <br>
-        <input type="text" name="last_Name" value="<?php echo $salesperson['last_name']; ?>"/><br>
-        <br>
+        <input type="text" name="last_Name" value="<?php echo h($salesperson['last_name']); ?>"/><br>
+    Phone:<br>
+        <input type="text" name="phone" value="<?php echo h($salesperson['phone']); ?>" /><br>
+    Email:<br>
+        <input type="text" name="email" value="<?php echo h($salesperson['email']); ?>" /><br>
+    <br>
         <input type="submit" name="submit" value="Update">
     </form>
 

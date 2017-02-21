@@ -46,6 +46,25 @@
 
   function validate_state($state, $errors=array()) {
     // TODO add validations
+    if (is_blank($state['name'])) {
+      $errors[] = "Name cannot be blank.";
+    } 
+    elseif (!has_length($state['name'], array('min' => 1, 'max' => 255))) {
+      $errors[] = "Name must be between 1 and 255 characters.";
+    }
+    elseif (!capital_state($state['name'])) {
+        $errors[] = "State must be capitalized.";
+    }
+
+    if (is_blank($state['code'])) {
+      $errors[] = "Code cannot be blank.";
+    } 
+    elseif (!has_length($state['code'], array('min' => 1, 'max' => 255))) {
+      $errors[] = "Code must be between 1 and 255 characters.";
+    }
+    elseif (!capital_code($state['code'])) {
+        $errors[] = "State code must be all capitalized.";
+    }
 
     return $errors;
   }
@@ -60,7 +79,12 @@
       return $errors;
     }
 
-    $sql = ""; // TODO add SQL
+    $sql = "INSERT INTO states "; // TODO add SQL
+    $sql .= "(name, code) ";
+    $sql .= "VALUES (";
+    $sql .= "'" . db_escape($db, $state['name']) . "',";
+    $sql .= "'" . db_escape($db, $state['code']) . "'";
+    $sql .= ");";
     // For INSERT statments, $result is just true/false
     $result = db_query($db, $sql);
     if($result) {
@@ -84,7 +108,11 @@
       return $errors;
     }
 
-    $sql = ""; // TODO add SQL
+    $sql = "UPDATE states SET "; // TODO add SQL
+    $sql .= "name='" . db_escape($db, $state['name']) . "', ";
+    $sql .= "code='" . db_escape($db, $state['code']) . "' ";
+    $sql .= "WHERE id='" . db_escape($db, $state['id']) . "' ";
+    $sql .= "LIMIT 1;";
     // For update_state statments, $result is just true/false
     $result = db_query($db, $sql);
     if($result) {
@@ -132,6 +160,28 @@
 
   function validate_territory($territory, $errors=array()) {
     // TODO add validations
+    if (is_blank($territory['name'])) {
+      $errors[] = "Name cannot be blank.";
+    } 
+    elseif (!has_length($territory['name'], array('min' => 1, 'max' => 255))) {
+      $errors[] = "Name must be between 1 and 255 characters.";
+    }
+    
+    if (!capital_first($territory['name'])) {
+        $errors[] = "Name must be capitalized.";
+    }
+
+    if (is_blank($territory['state_id'])) {
+      $errors[] = "State ID cannot be blank.";
+    }
+
+    if (is_blank($territory['position'])) {
+      $errors[] = "Position cannot be blank.";
+    }
+    
+    if (positive_territory($territory['position'])) {
+        $errors[] = "Territory position cannot be a negative value.";
+    }
 
     return $errors;
   }
@@ -146,7 +196,13 @@
       return $errors;
     }
 
-    $sql = ""; // TODO add SQL
+    $sql = "INSERT INTO territories "; // TODO add SQL
+    $sql .= "(name, state_id, position) ";
+    $sql .= "VALUES (";
+    $sql .= "'" . db_escape($db, $territory['name']) . "',";
+    $sql .= "'" . db_escape($db, $territory['state_id']) . "',";
+    $sql .= "'" . db_escape($db, $territory['position']) . "'";
+    $sql .= ");";
     // For INSERT statments, $result is just true/false
     $result = db_query($db, $sql);
     if($result) {
@@ -170,7 +226,12 @@
       return $errors;
     }
 
-    $sql = ""; // TODO add SQL
+    $sql = "UPDATE territories SET "; // TODO add SQL
+    $sql .= "name='" . db_escape($db, $territory['name']) . "', ";
+    $sql .= "state_id='" . db_escape($db, $territory['state_id']) . "', ";
+    $sql .= "position='" . db_escape($db, $territory['position']) . "' ";
+    $sql .= "WHERE id='" . db_escape($db, $territory['id']) . "' ";
+    $sql .= "LIMIT 1;";
     // For update_territory statments, $result is just true/false
     $result = db_query($db, $sql);
     if($result) {
@@ -222,6 +283,42 @@
 
   function validate_salesperson($salesperson, $errors=array()) {
     // TODO add validations
+    if (is_blank($salesperson['first_name'])) {
+      $errors[] = "First name cannot be blank.";
+    } 
+    elseif (!has_length($salesperson['first_name'], array('min' => 1, 'max' => 255))) {
+      $errors[] = "First name must be between 1 and 255 characters.";
+    }
+    elseif (!capital_first($salesperson['first_name'])) {
+        $errors[] = "First name must be capitalized.";
+    }
+
+    if (is_blank($salesperson['last_name'])) {
+      $errors[] = "Last name cannot be blank.";
+    } 
+    elseif (!has_length($salesperson['last_name'], array('min' => 1, 'max' => 255))) {
+      $errors[] = "Last name must be between 1 and 255 characters.";
+    }
+    elseif (!capital_last($salesperson['last_name'])) {
+        $errors[] = "Last name must be capitalized.";
+    }
+
+    if (is_blank($salesperson['email'])) {
+      $errors[] = "Email cannot be blank.";
+    } 
+    elseif (!has_valid_email_format($salesperson['email'])) {
+      $errors[] = "Email must be a valid format.";
+    }
+
+    if (is_blank($salesperson['phone'])) {
+      $errors[] = "Phone number cannot be blank.";
+    } 
+    elseif (!has_length($salesperson['phone'], array('min' => 7, 'max' => 255))) {
+      $errors[] = "Phone number must be between 7 to 255 characters.";
+    } 
+    elseif (!has_valid_number($salesperson['phone'])) {
+      $errors[] = "Invalid phone number format.";
+    }
 
     return $errors;
   }
@@ -236,7 +333,14 @@
       return $errors;
     }
 
-    $sql = ""; // TODO add SQL
+    $sql = "INSERT INTO salespeople "; // TODO add SQL
+    $sql .= "(first_name, last_name, phone, email) ";
+    $sql .= "VALUES (";
+    $sql .= "'" . db_escape($db, $salesperson['first_name']) . "',";
+    $sql .= "'" . db_escape($db, $salesperson['last_name']) . "',";
+    $sql .= "'" . db_escape($db, $salesperson['phone']) . "',";
+    $sql .= "'" . db_escape($db, $salesperson['email']) . "'";
+    $sql .= ");";
     // For INSERT statments, $result is just true/false
     $result = db_query($db, $sql);
     if($result) {
@@ -260,7 +364,13 @@
       return $errors;
     }
 
-    $sql = ""; // TODO add SQL
+    $sql = "UPDATE salespeople SET "; // TODO add SQL
+    $sql .= "first_name='" . db_escape($db, $salesperson['first_name']) . "', ";
+    $sql .= "last_name='" . db_escape($db, $salesperson['last_name']) . "', ";
+    $sql .= "phone='" . db_escape($db, $salesperson['phone']) . "', ";
+    $sql .= "email='" . db_escape($db, $salesperson['email']) . "' ";
+    $sql .= "WHERE id='" . db_escape($db, $salesperson['id']) . "' ";
+    $sql .= "LIMIT 1;";
     // For update_salesperson statments, $result is just true/false
     $result = db_query($db, $sql);
     if($result) {
@@ -315,11 +425,17 @@
     } elseif (!has_length($user['first_name'], array('min' => 2, 'max' => 255))) {
       $errors[] = "First name must be between 2 and 255 characters.";
     }
+    elseif (!capital_first($user['first_name'])) {
+        $errors[] = "First name must be capitalized.";
+    }
 
     if (is_blank($user['last_name'])) {
       $errors[] = "Last name cannot be blank.";
     } elseif (!has_length($user['last_name'], array('min' => 2, 'max' => 255))) {
       $errors[] = "Last name must be between 2 and 255 characters.";
+    }
+    elseif (!capital_last($user['last_name'])) {
+        $errors[] = "Last name must be capitalized.";
     }
 
     if (is_blank($user['email'])) {
@@ -332,6 +448,9 @@
       $errors[] = "Username cannot be blank.";
     } elseif (!has_length($user['username'], array('max' => 255))) {
       $errors[] = "Username must be less than 255 characters.";
+    }
+    elseif (!has_valid_username($user['username'])) {
+        $errors[] = "Username format is not valid.";
     }
     return $errors;
   }
